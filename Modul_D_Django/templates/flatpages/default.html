@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{{flatpage.title}}</title>
+
+        {% load static %}
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+   <div class="container">
+       <a class="navbar-brand" href="#">Final task 1.6 (HW-03)</a>
+       <button class="navbar-toggler" type="button" data-toggle="collapse"
+               data-target="#navbarResponsive"
+               aria-controls="navbarResponsive" aria-expanded="false"
+               aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarResponsive">
+           <ul class="navbar-nav ml-auto">
+               <li class="nav-item active">
+                   <a class="nav-link" href="#">Home
+                       <span class="sr-only">(current)</span>
+                   </a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/about/">About</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/contacts/">Contact</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/page2/">Different</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/page3/">Double</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/page1/">Secret</a>
+               </li>
+           </ul>
+       </div>
+   </div>
+</nav>
+        <!-- Page content-->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    {% block content %}
+                    {% endblock content %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
