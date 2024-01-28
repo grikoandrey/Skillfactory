@@ -33,12 +33,15 @@ class Category(models.Model):
     POLITICS, EDUCATION, SPORT, MUSIC = 'POL', 'EDU', 'SPR', 'MUS'
 
     SUBJECTS = [
-        (POLITICS, 'политика'),
-        (EDUCATION, 'образование'),
-        (SPORT, 'спорт'),
-        (MUSIC, 'музыка')
+        (POLITICS, 'Политика'),
+        (EDUCATION, 'Образование'),
+        (SPORT, 'Спорт'),
+        (MUSIC, 'Музыка')
     ]
     category = models.CharField(max_length=3, choices=SUBJECTS, unique=True)
+
+    def __str__(self):
+        return self.category.title()
 
 
 class Post(models.Model):
@@ -53,6 +56,9 @@ class Post(models.Model):
     post_rating = models.IntegerField(default=0)
     post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
     post_category = models.ManyToManyField(Category, through='PostCategory')
+
+    def __str__(self):
+        return f'{self.title.title()}: {self.text[:30]}'
 
     def preview(self):
         return f"{self.text[:123]}..."
