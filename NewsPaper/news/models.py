@@ -1,12 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
 
 
 # Create your models here.
 class Author(models.Model):
+    objects = None
     author_user = models.OneToOneField(User, on_delete=models.CASCADE)
     author_rating = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.author_user.username
 
     def update_rating(self):
         # Суммарный рейтинг всех комментариев автора
@@ -30,6 +35,7 @@ class Author(models.Model):
 
 
 class Category(models.Model):
+    objects = None
     POLITICS, EDUCATION, SPORT, MUSIC = 'POL', 'EDU', 'SPR', 'MUS'
 
     SUBJECTS = [
@@ -38,13 +44,14 @@ class Category(models.Model):
         (SPORT, 'Спорт'),
         (MUSIC, 'Музыка')
     ]
-    category = models.CharField(max_length=3, choices=SUBJECTS, unique=True)
+    category = models.CharField(max_length=20, choices=SUBJECTS, unique=True)
 
     def __str__(self):
-        return self.category.title()
+        return self.category  # .title()
 
 
 class Post(models.Model):
+    objects = None
     ARTICLE, NEWS = 'ART', 'NEW'
 
     TYPE_POST = [(ARTICLE, 'Статья'), (NEWS, 'Новость')]
@@ -56,6 +63,10 @@ class Post(models.Model):
     post_rating = models.IntegerField(default=0)
     post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
     post_category = models.ManyToManyField(Category, through='PostCategory')
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(args, kwargs)
+    #     self.id = None
 
     def __str__(self):
         return f'{self.title.title()}: {self.text[:30]}'
@@ -70,6 +81,9 @@ class Post(models.Model):
     def dislike(self):
         self.post_rating -= 1
         self.save()
+
+    def get_absolute_url(self):  # определи переход на страницу созданного поста при создании
+        return reverse('post', args=[str(self.pk)])
 
 
 class PostCategory(models.Model):

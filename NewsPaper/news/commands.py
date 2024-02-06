@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from news.models import Author, Category, Post, Comment
 
 # Создаем двух пользователей
-user1 = User.objects.create_user('user3')
-user2 = User.objects.create_user('user4')
+user1 = User.objects.create_user('user1')
+user2 = User.objects.create_user('user2')
 
 # Создаем два объекта модели Author, связанных с пользователями
 author1 = Author.objects.create(author_user=user1)

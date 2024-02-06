@@ -7,7 +7,22 @@
 {% block title %} Posts {% endblock title %}
 
 {% block content %}
-<h1>Все новости, количество: {{ news_count }} шт.</h1>
+<h1>Поиск новостей и статей. Всего: {{ news_count }}</h1>
+<hr>
+<form action="" method="get">
+    {{ filterset.form.title.label_tag }}
+    {{ filterset.form.title }}
+    <br>
+    {{ filterset.form.post_category.label_tag }}
+    {{ filterset.form.post_category }}
+    <br>
+    {{ filterset.form.post_created_date__lte.label_tag }}
+    {{ filterset.form.post_created_date__lte }}
+    {{ filterset.form.post_created_date__gte.label_tag }}
+    {{ filterset.form.post_created_date__gte }}
+    <br>
+    <input type="submit" value="Найти" style="margin-top: 10px;">
+</form>
 <hr>
 {% if posts %}
   <table>

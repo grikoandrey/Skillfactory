@@ -23,25 +23,19 @@
        </button>
        <div class="collapse navbar-collapse" id="navbarResponsive">
            <ul class="navbar-nav ml-auto">
-               <li class="nav-item">
+               <li class="nav-item active">
                    <a class="nav-link" href="/portal/">Home
-                       {% if request.path == '/portal/' %}<span class="sr-only">(current)</span>{% endif %}
+                       <span class="sr-only">(current)</span>
                    </a>
                </li>
                <li class="nav-item">
-                   <a class="nav-link" href="/portal/search/">Search
-                       {% if request.path == '/portal/search/' %}<span class="sr-only">(current)</span>{% endif %}
-                   </a>
+                   <a class="nav-link" href="/portal/search/">Search</a>
                </li>
                <li class="nav-item">
-                   <a class="nav-link" href="/portal/news/create/">Create News
-                       {% if request.path == '/portal/news/create/' %}<span class="sr-only">(current)</span>{% endif %}
-                   </a>
+                   <a class="nav-link" href="/portal/{{ post.type_post }}/{{ post.id }}/edit/">Edit Post</a>
                </li>
                <li class="nav-item">
-                   <a class="nav-link" href="/portal/articles/create/">Create Article
-                       {% if request.path == '/portal/articles/create/' %}<span class="sr-only">(current)</span>{% endif %}
-                   </a>
+                   <a class="nav-link" href="/portal/news/{{ post.id }}/delete/">Delete Post</a>
                </li>
                <li class="nav-item">
                    <a class="nav-link" href="#">About</a>

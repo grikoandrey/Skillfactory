@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # additional applications
     'django.contrib.sites',
     'django.contrib.flatpages',
+    'django_filters',
     # users apps:
     'news',
     'accounts',
