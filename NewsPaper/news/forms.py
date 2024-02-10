@@ -17,13 +17,13 @@ class PostsForm(forms.ModelForm):  # создали форму для работ
     class Meta:
         model = Post
         fields = [  # В fields мы описываем по каким полям модели будет производиться фильтрация, выборочно.
-                  'title', 'post_category', 'text', 'post_author',
+                  'title', 'post_category', 'text',  # 'post_author',
                   # 'post_created_date', # 'type_post', # 'post_rating',
                  ]
         labels = {  # задали читабельные наименования
             'title': 'Заголовок',
             'post_category': 'Категория',
-            'post_author': 'Автор',
+            # 'post_author': 'Автор',
             'text': 'Текст',
         }
         # widgets = {'post_category': forms.SelectMultiple(attrs={'class': 'form-control'})}

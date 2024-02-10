@@ -8,5 +8,10 @@
 {% block content %}
 <h1>{{ post.title|censor }}</h1>
 <p>{{ post.post_created_date|date:'d.m.Y' }}</p>
+<p>{{ post.post_author.author_user.username }}</p>
+<hr>
+<br>
+<br>
+<br>
 <p>{{ post.text|censor }}</p>
 {% endblock content %}

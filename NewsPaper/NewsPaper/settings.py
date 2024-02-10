@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,13 +22,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-esy#(#z1#kd+uln8g6zhsm2u&&v951*@n2r)^a-o7@m(4xt)0g'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = [      # # Этого раздела может не быть, добавьте его в указанном виде.
+    'django.contrib.auth.backends.ModelBackend',  # реализующий аутентификацию по username;
+    'allauth.account.auth_backends.AuthenticationBackend',]  # бэкенд аутентификации, предоставленный пакетом
+# 'allauth.socialaccount.backends.telegram.TelegramOAuth2Adapter',]
 
 # Application definition
 
@@ -37,16 +43,32 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # additional applications
+    # additional apps
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
+    # apps for allauth. три обязательных приложения для работы allauth и одно,
+    # которое добавит поддержку входа с помощью Yandex
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.yandex',
+    # 'allauth.socialaccount.providers.vk',
+    'allauth.socialaccount.providers.telegram',
+    # 'allauth.socialaccount.providers.mailru',
+    # 'allauth.socialaccount.providers.instagram',
+    # 'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.facebook',
     # users apps:
     'news',
     'accounts',
 ]
 
 SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/portal'
+LOGOUT_REDIRECT_URL = '/portal'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,13 +80,54 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # additionally
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # mandatory for allauth
+    'allauth.account.middleware.AccountMiddleware'
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+                'secret': os.getenv('GOOGLE_SECRET')}},
+    # 'mailru': {
+    #     'APP': {'client_id': os.getenv('MAILRU_CLIENT_ID'),
+    #             'secret': os.getenv('MAILRU_SECRET')}},
+    'yandex': {
+        'APP': {'client_id': os.getenv('YANDEX_CLIENT_ID'),
+                'secret': os.getenv('YANDEX_SECRET')}},
+    'telegram': {
+        'APP': {'client_id': os.getenv('TELEGRAM_CLIENT_ID'),
+                'secret': os.getenv('TELEGRAM_SECRET')}},  # Токен вашего Telegram бота
+    # 'facebook': {
+    #     'METHOD': 'oauth2',
+    #     'SCOPE': ['email', 'public_profile'],  # запрашиваемые разрешения
+    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    #     'INIT_PARAMS': {'cookie': True},
+    #     'FIELDS': [
+    #         'id',
+    #         'first_name',
+    #         'last_name',
+    #         'middle_name',
+    #         'name',
+    #         'name_format',
+    #         'picture',
+    #         'short_name'
+    #     ],
+    #     'EXCHANGE_TOKEN': True,
+    #     'LOCALE_FUNC': 'path.to.callable',
+    #     'VERIFIED_EMAIL': False,
+    #     'VERSION': 'v13.0',
+    #     'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
+    # }
+}
+
 
 ROOT_URLCONF = 'NewsPaper.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    {'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -73,10 +136,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # added apps for allauth
+                'django.template.context_processors.request'  # контекстный процессор
             ],
         },
-    },
-]
+     },]
 
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
 
@@ -96,18 +160,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 
@@ -135,3 +191,11 @@ STATICFILES_DIRS = [BASE_DIR/'static']
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Constance for allauth
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}  # добавили применение кастом-формы

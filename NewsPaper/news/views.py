@@ -1,8 +1,10 @@
+from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .filters import PostFilter
-from .models import Post
+from .models import Post, Author
 from .forms import PostsForm
 
 
@@ -52,7 +54,8 @@ class PostDetails(DetailView):
     context_object_name = 'post'  # Название объекта, в котором будет выбранный пользователем пост
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
     form_class = PostsForm  # Указываем нашу разработанную форму
     model = Post  # ссылаемся на модель поста
     template_name = 'news_create_edit.html'  # и новый шаблон, в котором используется форма.
@@ -60,22 +63,35 @@ class PostCreate(CreateView):
     def form_valid(self, form):  # переопределяем зависимость создания категории от выбранной страницы
         news = form.save(commit=False)
         news.type_post = 'NEW'
+        author, created = Author.objects.get_or_create(author_user=self.request.user)
+        form.instance.post_author = author
         return super().form_valid(form)
 
 
-class PostEdit(UpdateView):  # Представление для изменения новости.
+class PostEdit(PermissionRequiredMixin, UpdateView):  # Представление для изменения новости.
+    permission_required = ('news.change_post',)
     form_class = PostsForm
     model = Post
     template_name = 'news_edit.html'  # ссылка на свой шаблон
 
+    def dispatch(self, request, *args, **kwargs):
+        # Получаем объект Post, который пользователь пытается редактировать
+        post = self.get_object()
+        # Проверяем, является ли текущий пользователь автором данного поста
+        if request.user != post.post_author.author_user:
+            return HttpResponseForbidden("Вы не можете изменять данную новость!")
+        return super().dispatch(request, *args, **kwargs)
 
-class PostDelete(DeleteView):  # Представление удаляющее новость.
+
+class PostDelete(PermissionRequiredMixin, DeleteView):  # Представление удаляющее новость.
+    permission_required = ('news.delete_post',)
     model = Post
     template_name = 'news_delete.html'  # ссылка на общий шаблон, так как удаление в принципе объекта
     success_url = reverse_lazy('posts')
 
 
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
     form_class = PostsForm  # Указываем нашу разработанную форму
     model = Post  # ссылаемся на модель поста
     template_name = 'article_create.html'  # и новый шаблон, в котором используется форма.
@@ -83,10 +99,19 @@ class ArticleCreate(CreateView):
     def form_valid(self, form):  # переопределяем зависимость создания категории от выбранной страницы
         news = form.save(commit=False)
         news.type_post = 'ART'
+        author, created = Author.objects.get_or_create(author_user=self.request.user)
+        form.instance.post_author = author
         return super().form_valid(form)
 
 
-class ArticleEdit(UpdateView):  # Представление для изменения статьи.
+class ArticleEdit(PermissionRequiredMixin, UpdateView):  # Представление для изменения статьи.
+    permission_required = ('news.change_post',)
     form_class = PostsForm
     model = Post
     template_name = 'article_edit.html'  # ссылка на свой шаблон
+
+    def dispatch(self, request, *args, **kwargs):
+        post = self.get_object()
+        if request.user != post.post_author.author_user:
+            return HttpResponseForbidden("Вы не можете изменять данную статью!")
+        return super().dispatch(request, *args, **kwargs)
