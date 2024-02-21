@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Новость: создание</h1>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+<!--    {{ form.title.label_tag }}-->
+<!--    {{ form.title }}<br>-->
+
+<!--    <label for="id_post_category">Категория:</label><br>-->
+<!--    {% for category in form.post_category %}-->
+<!--        <input type="checkbox" id="{{ category.id }}" name="post_category" value="{{ category.id }}"-->
+<!--               {% if category.id in post_categories %}checked{% endif %}>-->
+<!--        <label for="{{ category.id }}">{{ category.choice_label }}</label><br>-->
+<!--    {% endfor %}-->
+
+<!--    {{ form.text.label_tag }}-->
+<!--    {{ form.text }}<br>-->
+
+<!--    {{ form.post_author.label_tag }}-->
+<!--    {{ form.post_author }}-->
+
+    {{ form.as_p }}
+    <input type="submit" value="Сохранить" />
+</form>
+{% endblock content %}

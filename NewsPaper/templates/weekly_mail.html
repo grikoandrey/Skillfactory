@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Уведомление</title>
+</head>
+<body>
+  <h2>Здравствуйте! Новые статьи за последнюю неделю в подписанных категориях!</h2>
+  <ul>
+     {% for post in new_posts %}
+        <li>{{ post.title }}: <a href="{{ link }}{{ post.get_absolute_url }}">{{ post.title }}</a>
+            - {{ post.post_created_date|date:'d M Y' }}</li>
+     {% endfor %}
+  </ul>
+</body>
+</html>
