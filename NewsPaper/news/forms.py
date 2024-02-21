@@ -7,7 +7,7 @@ from .models import Post, Category
 class PostsForm(forms.ModelForm):  # создали форму для работы с объектом Пост
     post_category = forms.ModelMultipleChoiceField(  # отдельно задали параметры для поля выбора
         queryset=Category.objects.all(),
-        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        # widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
         # widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
         label='Категория')
 # to_field_name='id',  # Поле модели, которое будет использовано в качестве значения в выпадающем списке
@@ -26,7 +26,6 @@ class PostsForm(forms.ModelForm):  # создали форму для работ
             # 'post_author': 'Автор',
             'text': 'Текст',
         }
-        # widgets = {'post_category': forms.SelectMultiple(attrs={'class': 'form-control'})}
 
     def clean_title(self):  # добавили условие проверки
         title = self.cleaned_data["title"]

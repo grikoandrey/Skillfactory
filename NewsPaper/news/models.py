@@ -47,7 +47,7 @@ class Category(models.Model):
     category = models.CharField(max_length=20, choices=SUBJECTS, unique=True)
 
     def __str__(self):
-        return self.category  # .title()
+        return self.category
 
 
 class Post(models.Model):
@@ -84,6 +84,12 @@ class Post(models.Model):
 
     def get_absolute_url(self):  # определи переход на страницу созданного поста при создании
         return reverse('post', args=[str(self.pk)])
+
+
+class Subscriber(models.Model):
+    objects = None
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='subscriptions', )
+    category = models.ForeignKey(to=Category, on_delete=models.CASCADE, related_name='subscriptions', )
 
 
 class PostCategory(models.Model):

@@ -1,5 +1,7 @@
 from django.urls import path
 
+from news.views import PostsList
+
 urlpatterns = [
    # path — означает путь.
    # В данном случае путь ко всем товарам у нас останется пустым, чуть позже станет ясно почему.

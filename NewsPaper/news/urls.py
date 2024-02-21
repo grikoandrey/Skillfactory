@@ -1,6 +1,7 @@
 from django.urls import path
 # Импортируем созданное нами представление
-from .views import PostsList, PostDetails, PostsSearch, PostCreate, PostEdit, PostDelete, ArticleCreate, ArticleEdit
+from .views import PostsList, PostDetails, PostsSearch, PostCreate, PostEdit, PostDelete, ArticleCreate, ArticleEdit, \
+   subscriptions
 
 urlpatterns = [
    # path — означает путь.
@@ -14,10 +15,11 @@ urlpatterns = [
    path('search/', PostsSearch.as_view(), name='posts_search'),
    path('news/create/', PostCreate.as_view(), name='news_create'),
    path('NEW/<int:pk>/edit/', PostEdit.as_view(), name='news_edit'),
-   path('news/<int:pk>/delete/', PostDelete.as_view(), name='news_delete'),
+   path('<int:pk>/delete/', PostDelete.as_view(), name='news_delete'),
    path('articles/create/', ArticleCreate.as_view(), name='articles_create'),
    path('ART/<int:pk>/edit/', ArticleEdit.as_view(), name='articles_edit'),
    # path('articles/<int:pk>/delete/', PostDelete.as_view(), name='articles_delete'),
+   path('subscriptions/', subscriptions, name='subscriptions'),
 ]
 
 # Теперь нам стали доступны новые пути:

@@ -33,7 +33,8 @@
                        {% if request.path == '/portal/search/' %}<span class="sr-only">(current)</span>{% endif %}
                    </a>
                </li>
-           {% if perms.news.add_post %}
+           {% if perms.news.add_post or request.user.is_authenticated%}
+
                <li class="nav-item">
 
                    <a class="nav-link" href="/portal/news/create/">Create News
@@ -45,9 +46,11 @@
                        {% if request.path == '/portal/articles/create/' %}<span class="sr-only">(current)</span>{% endif %}
                    </a>
                </li>
+
            {% else %}
                <a class="nav-link" href="/accounts/login/" style="font-size: 14px;">Для создания постов войдите или
                    зарегистрируйтесь<br>через аккаунт социальных сетей (Google, Yandex, Telegram)</a>
+
            {% endif %}
                <li class="nav-item">
                    <a class="nav-link" href="#">About</a>

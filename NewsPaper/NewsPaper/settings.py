@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY_NEWSPAPER')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
+    'django_apscheduler',  # для задачь по расписанию
     # apps for allauth. три обязательных приложения для работы allauth и одно,
     # которое добавит поддержку входа с помощью Yandex
     'allauth',
@@ -61,7 +62,8 @@ INSTALLED_APPS = [
     # 'allauth.socialaccount.providers.github',
     # 'allauth.socialaccount.providers.facebook',
     # users apps:
-    'news',
+    # 'news',  # заменено на уточняюшую формулировку для сигналов
+    'news.apps.NewsConfig',
     'accounts',
 ]
 
@@ -133,11 +135,11 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request',  # контекстный процессор
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # added apps for allauth
-                'django.template.context_processors.request'  # контекстный процессор
+                # 'django.template.context_processors.request'
             ],
         },
      },]
@@ -197,5 +199,29 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # для перехода сразу на страницу входа
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1  # срок действия ссылки для подтверждения
+
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}  # добавили применение кастом-формы
+SITE_URL = 'http://127.0.0.1:8000'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # не обязательный параметр, по умолчанию
+EMAIL_HOST = 'smtp.yandex.ru'  # хост почтового сервера
+EMAIL_PORT = 465  # порт, на который почтовый сервер принимает письма
+EMAIL_HOST_USER = os.getenv('USER_NAME_YANDEX')  # логин пользователя почтового сервера
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWD_YANDEX")  # пароль пользователя почтового сервера
+EMAIL_USE_TLS = False  # необходимость использования TLS, см. настройку сервера
+EMAIL_USE_SSL = True  # необходимость использования SSL
+
+DEFAULT_FROM_EMAIL = os.getenv('USER_NAME_YANDEX')  # почтовый адрес отправителя по умолчанию
+
+SERVER_EMAIL = os.getenv('USER_NAME_YANDEX')  # адрес почты для отправки админам и менеджерам
+EMAIL_SUBJECT_PREFIX = 'NewsPortal'
+MANAGERS = (('Andrey', os.getenv('USER_NAME_YANDEX')),
+            # ('Petr', 'petr@yandex.ru'),
+            )
+ADMINS = (('Andrey', os.getenv('USER_NAME_YANDEX')), )
+
+# APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'  № внутрениий формат даты
+# APSCHEDULER_RUN_NOW_TIMEOUT = 25  # время работы функции для контроля памяти
