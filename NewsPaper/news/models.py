@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.urls import reverse
+from django.utils import timezone
 
 
 # Create your models here.
@@ -90,6 +91,7 @@ class Subscriber(models.Model):
     objects = None
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='subscriptions', )
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE, related_name='subscriptions', )
+    last_notification_sent = models.DateTimeField(default=timezone.now)
 
 
 class PostCategory(models.Model):
