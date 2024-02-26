@@ -206,7 +206,7 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1  # срок действия ссыл
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}  # добавили применение кастом-формы
 SITE_URL = 'http://127.0.0.1:8000'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # не обязательный параметр, по умолчанию
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # не обязательный параметр, по умолчанию
 EMAIL_HOST = 'smtp.yandex.ru'  # хост почтового сервера
 EMAIL_PORT = 465  # порт, на который почтовый сервер принимает письма
 EMAIL_HOST_USER = os.getenv('USER_NAME_YANDEX')  # логин пользователя почтового сервера
@@ -225,3 +225,10 @@ ADMINS = (('Andrey', os.getenv('USER_NAME_YANDEX')), )
 
 # APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'  № внутрениий формат даты
 # APSCHEDULER_RUN_NOW_TIMEOUT = 25  # время работы функции для контроля памяти
+
+CELERY_BROKER_URL = 'redis://localhost:6379'  # указывает на URL брокера сообщений (Redis).
+# По умолчанию находится на порту 6379
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'  # указывает на хранилище результатов выполнения задач
+CELERY_ACCEPT_CONTENT = ['application/json']  # допустимый формат данных
+CELERY_TASK_SERIALIZER = 'json'  # метод сериализации задач
+CELERY_RESULT_SERIALIZER = 'json'  # метод сериализации результатов

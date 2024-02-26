@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from .filters import PostFilter
 from .models import Post, Author, Category, Subscriber
 from .forms import PostsForm
+from .tasks import post_created
 
 
 # Create your views here.
@@ -69,6 +70,8 @@ class PostCreate(PermissionRequiredMixin, CreateView):
         news.type_post = 'NEW'
         author, created = Author.objects.get_or_create(author_user=self.request.user)
         form.instance.post_author = author
+        news.save()  # сохранение поста
+        post_created.delay(news.pk)  # и после сохранения вызов "таски"
         return super().form_valid(form)
 
 
@@ -105,6 +108,8 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
         news.type_post = 'ART'
         author, created = Author.objects.get_or_create(author_user=self.request.user)
         form.instance.post_author = author
+        news.save()  # сохранение поста
+        post_created.delay(news.pk)  # и после сохранения вызов "таски"
         return super().form_valid(form)
 
 
